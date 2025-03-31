@@ -1,0 +1,4 @@
+# .vercelignore
+node_modules/
+.gitignore
+.vercelignore

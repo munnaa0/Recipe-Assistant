@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 let recipes = [];
 try {
   const data = fs.readFileSync(
-    path.join(__dirname, "../public/recipe.json"),
+    path.join(__dirname, "../data/recipe.json"),
     "utf8"
   );
   const jsonData = JSON.parse(data);
@@ -252,10 +252,10 @@ app.post("/api/chat", (req, res) => {
 });
 
 // --- Start Server ---
-if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
-  });
-}
+//if (process.env.NODE_ENV !== "production") {
+//  app.listen(port, () => {
+//    console.log(`🚀 Server running on http://localhost:${port}`);
+//  });
+//}
 
 module.exports = app;
