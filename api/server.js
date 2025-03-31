@@ -14,10 +14,9 @@ app.use(express.static(path.join(__dirname, "../public")));
 // Load recipes from recipe.json at startup
 let recipes = [];
 try {
-  const data = fs.readFileSync(
-    path.join(__dirname, "../data/recipe.json"),
-    "utf8"
-  );
+  const data = fs.readFileSync(path.join(__dirname, "../data/recipe.json"), {
+    encoding: "utf-8",
+  });
   const jsonData = JSON.parse(data);
   recipes = jsonData.recipes || [];
   console.log(`✅ Loaded ${recipes.length} recipes.`);
@@ -253,9 +252,11 @@ app.post("/api/chat", (req, res) => {
 
 // --- Start Server (Only for local development) ---
 if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
-  });
+  app.use(express.static(path.join(__dirname, "../public")));
 }
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
 
 module.exports = app;
