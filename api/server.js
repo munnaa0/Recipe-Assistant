@@ -9,34 +9,21 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "../public"))); // Using process.cwd() for consistency
+
+// Error-handling middleware
 app.use((err, req, res, next) => {
-  console.error("Vercel Error:", err);
+  console.error("Function Error:", err);
   res.status(500).json({ error: "Internal Server Error" });
 });
 
 // Load recipes from recipe.json at startup
 let recipes = [];
 try {
-  const dataPath = `${__dirname}/../data/recipe.json`;
-  console.log("Vercel Path Check:", dataPath);
-
-  const data = fs.readFileSync(dataPath, "utf-8");
-
-  console.log("__dirname:", __dirname);
-  console.log(
-    "Full recipe.json path:",
-    path.resolve(__dirname, "../data/recipe.json")
+  const data = fs.readFileSync(
+    path.join(__dirname, "../data/recipe.json"), // Adjusted path
+    "utf8"
   );
-  console.log(
-    "Does data directory exist?",
-    fs.existsSync(path.join(__dirname, "../data"))
-  );
-  console.log(
-    "Does recipe.json exist?",
-    fs.existsSync(path.join(__dirname, "../data/recipe.json"))
-  );
-
   const jsonData = JSON.parse(data);
   recipes = jsonData.recipes || [];
   console.log(`✅ Loaded ${recipes.length} recipes.`);
@@ -45,16 +32,15 @@ try {
   process.exit(1);
 }
 
-// Helper function to normalize names and queries
-const normalizeString = (str) => {
-  return str
+// Helper function to normalize strings
+const normalizeString = (str) =>
+  str
     .toLowerCase()
     .normalize("NFKD")
-    .replace(/[^\p{L}\p{N}]/gu, "") // Allow all Unicode letters and numbers
-    .replace(/s$/, ""); // Optionally remove trailing 's'
-};
+    .replace(/[^\p{L}\p{N}]/gu, "")
+    .replace(/s$/, "");
 
-// --- API Endpoint ---
+// --- API Endpoint (POST only) ---
 app.post("/api/chat", (req, res) => {
   const query = req.body.message?.trim().toLowerCase();
   if (!query || query.length < 1) {
@@ -66,13 +52,12 @@ app.post("/api/chat", (req, res) => {
 
   console.log(`\n🔍 Recipe query: "${query}"`);
 
-  // Check if the query is asking for a specific recipe category
+  // Example branch for "bengali recipes"
   if (
     query.includes("bengali recipies") ||
     query.includes("bengali recipe") ||
     query.includes("bengali recipes")
   ) {
-    // Take first 102 entries
     const limitedRecipes = recipes.slice(0, 102);
     let responseText =
       "------------------------------<b>Bengali Recipes</b>-----------------------<br><br>";
@@ -203,7 +188,7 @@ app.post("/api/chat", (req, res) => {
   }
 
   // Improved matching with aliases support and partial matching
-  const queryTokens = query.split(" ").map((token) => normalizeString(token));
+  const queryTokens = query.split(" ").map(normalizeString);
 
   const matchedRecipes = recipes
     .map((recipe) => {
@@ -228,7 +213,6 @@ app.post("/api/chat", (req, res) => {
       );
       return {
         ...recipe,
-        normalizedNames,
         matchStrength: bestMatchMetrics.count,
         matchTotal: bestMatchMetrics.total,
       };
@@ -270,17 +254,19 @@ app.post("/api/chat", (req, res) => {
   }
 });
 
+// Serve your static index.html for the root route
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+  res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
-app.listen = function () {
-  console.log("Vercel Server Ready");
-  console.log("Environment:", process.env.NODE_ENV);
-  console.log(
-    "Recipe Path Verified:",
-    fs.existsSync(path.join(__dirname, "../data/recipe.json"))
-  );
-};
+// (Optional) Temporary GET endpoint for debugging the API route
+app.get("/api/debug", (req, res) => {
+  res.json({ message: "GET is working" });
+});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`🚀 Server running on http://localhost:${port}`);
+  });
+}
 
-module.exports = app;
+module.exports = app; // Required for Vercel serverless functions
