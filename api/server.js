@@ -252,9 +252,9 @@ app.post("/api/chat", (req, res) => {
 });
 
 // --- Start Server ---
-app.listen(port, () => {
-  console.log(`🚀 Server running on http://localhost:${port}`);
+// --- Start Server ---
+app.listen(port, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${port}`);
 });
-
 // Keep this for Render (no longer just for Vercel)
 module.exports = app;
