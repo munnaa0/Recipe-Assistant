@@ -4,7 +4,7 @@
   "description": "A recipe Chat Assistant",
   "main": "server.js",
   "scripts": {
-    "start": "api/server.js",
+    "start": "node server.js",
     "dev": "nodemon server.js"
   },
   "dependencies": {
