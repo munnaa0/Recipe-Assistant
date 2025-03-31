@@ -22,7 +22,7 @@ app.use(
 let recipes = [];
 try {
   const data = fs.readFileSync(
-    path.join(process.cwd(), "data", "recipe.json"),
+    path.join(__dirname, "../data/recipe.json"), // Correct relative path
     "utf8"
   );
   const jsonData = JSON.parse(data);
