@@ -263,10 +263,9 @@ app.get("/", (req, res) => {
 app.get("/api/debug", (req, res) => {
   res.json({ message: "GET is working" });
 });
-if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
-  });
-}
+app.listen(port, "0.0.0.0", () => {
+  // 👈 Add "0.0.0.0"
+  console.log(`🚀 Server running on port ${port}`);
+});
 
 module.exports = app; // Required for Vercel serverless functions
