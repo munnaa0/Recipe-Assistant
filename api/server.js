@@ -258,4 +258,4 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-module.exports = app; // Required for Vercel serverless functions
+module.exports = app;
