@@ -9,12 +9,15 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../public")));
 
 // Load recipes from recipe.json at startup
 let recipes = [];
 try {
-  const data = fs.readFileSync(path.join(__dirname, "recipe.json"), "utf8");
+  const data = fs.readFileSync(
+    path.join(__dirname, "../public/recipe.json"),
+    "utf8"
+  );
   const jsonData = JSON.parse(data);
   recipes = jsonData.recipes || [];
   console.log(`✅ Loaded ${recipes.length} recipes.`);
@@ -249,8 +252,10 @@ app.post("/api/chat", (req, res) => {
 });
 
 // --- Start Server ---
-app.listen(port, () => {
-  console.log(`🚀 Server running on http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`🚀 Server running on http://localhost:${port}`);
+  });
+}
 
 module.exports = app;
