@@ -270,13 +270,17 @@ app.post("/api/chat", (req, res) => {
   }
 });
 
-// --- Start Server (Only for local development) ---
-if (process.env.NODE_ENV !== "production") {
-  app.use(express.static(path.join(__dirname, "../public")));
-}
-
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
+
+app.listen = function () {
+  console.log("Vercel Server Ready");
+  console.log("Environment:", process.env.NODE_ENV);
+  console.log(
+    "Recipe Path Verified:",
+    fs.existsSync(path.join(__dirname, "../data/recipe.json"))
+  );
+};
 
 module.exports = app;
