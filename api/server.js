@@ -10,13 +10,33 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
+app.use((err, req, res, next) => {
+  console.error("Vercel Error:", err);
+  res.status(500).json({ error: "Internal Server Error" });
+});
 
 // Load recipes from recipe.json at startup
 let recipes = [];
 try {
-  const data = fs.readFileSync(path.join(__dirname, "../data/recipe.json"), {
-    encoding: "utf-8",
-  });
+  const dataPath = `${__dirname}/../data/recipe.json`;
+  console.log("Vercel Path Check:", dataPath);
+
+  const data = fs.readFileSync(dataPath, "utf-8");
+
+  console.log("__dirname:", __dirname);
+  console.log(
+    "Full recipe.json path:",
+    path.resolve(__dirname, "../data/recipe.json")
+  );
+  console.log(
+    "Does data directory exist?",
+    fs.existsSync(path.join(__dirname, "../data"))
+  );
+  console.log(
+    "Does recipe.json exist?",
+    fs.existsSync(path.join(__dirname, "../data/recipe.json"))
+  );
+
   const jsonData = JSON.parse(data);
   recipes = jsonData.recipes || [];
   console.log(`✅ Loaded ${recipes.length} recipes.`);
