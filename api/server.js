@@ -252,10 +252,15 @@ app.post("/api/chat", (req, res) => {
 });
 
 // --- Start Server (Only for local development) ---
-if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
-  });
-}
+//if (process.env.NODE_ENV !== "production") {
+//  app.listen(port, () => {
+//    console.log(`🚀 Server running on http://localhost:${port}`);
+//  });
+//}
 
-module.exports = app; // Required for Vercel serverless functions
+// --- Start Server ---
+app.listen(port, () => {
+  console.log(`🚀 Server running on http://localhost:${port}`);
+});
+
+//module.exports = app; // Required for Vercel serverless functions
