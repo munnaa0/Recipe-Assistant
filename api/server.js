@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 let recipes = [];
 try {
   const data = fs.readFileSync(
-    path.join(__dirname, "../data/recipe.json"),
+    path.join(__dirname, "../data/recipe.json"), // Adjusted path
     "utf8"
   );
   const jsonData = JSON.parse(data);
