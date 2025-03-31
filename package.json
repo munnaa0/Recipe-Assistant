@@ -1,7 +1,7 @@
 {
-  "name": "diu-mct-chatbot",
+  "name": "recipe-chat-assistant",
   "version": "1.0.0",
-  "description": "DIU MCT Department Chat Assistant",
+  "description": "A recipe Chat Assistant",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

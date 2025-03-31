@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -36,7 +36,7 @@ app.post("/api/chat", (req, res) => {
   const query = req.body.message?.trim().toLowerCase();
   if (!query || query.length < 1) {
     return res.status(400).json({
-      answer: "Please ask for a recipe by name (at least 1 characters).",
+      answer: "Please ask for a recipe by name (at least 1 character).",
       source: "input-error",
     });
   }
@@ -49,15 +49,13 @@ app.post("/api/chat", (req, res) => {
     query.includes("bengali recipe") ||
     query.includes("bengali recipes")
   ) {
-    // Take first 100 entries using slice()
+    // Take first 102 entries
     const limitedRecipes = recipes.slice(0, 102);
-
-    let responseText = `------------------------------<b>Bengali Recipes</b>-----------------------<br><br>`;
-
+    let responseText =
+      "------------------------------<b>Bengali Recipes</b>-----------------------<br><br>";
     limitedRecipes.forEach((recipe, index) => {
       responseText += `${index + 1}. ${recipe.name}<br>`;
     });
-
     return res.json({
       answer: responseText,
       source: "Recipe Database",
@@ -72,13 +70,11 @@ app.post("/api/chat", (req, res) => {
     query.includes("japanese recipie")
   ) {
     const limitedRecipes = recipes.slice(102, 190);
-
-    let responseText = `------------------------------<b>Japanese Recipes</b>-----------------------<br><br>`;
-
+    let responseText =
+      "------------------------------<b>Japanese Recipes</b>-----------------------<br><br>";
     limitedRecipes.forEach((recipe, index) => {
       responseText += `${index + 1}. ${recipe.name}<br>`;
     });
-
     return res.json({
       answer: responseText,
       source: "Recipe Database",
@@ -93,13 +89,11 @@ app.post("/api/chat", (req, res) => {
     query.includes("italian recipie")
   ) {
     const limitedRecipes = recipes.slice(190, 286);
-
-    let responseText = `------------------------------<b>Italian Recipes</b>-----------------------<br><br>`;
-
+    let responseText =
+      "------------------------------<b>Italian Recipes</b>-----------------------<br><br>";
     limitedRecipes.forEach((recipe, index) => {
       responseText += `${index + 1}. ${recipe.name}<br>`;
     });
-
     return res.json({
       answer: responseText,
       source: "Recipe Database",
@@ -114,13 +108,11 @@ app.post("/api/chat", (req, res) => {
     query.includes("chinese recipie")
   ) {
     const limitedRecipes = recipes.slice(286, 386);
-
-    let responseText = `------------------------------<b>Chinese Recipes</b>-----------------------<br><br>`;
-
+    let responseText =
+      "------------------------------<b>Chinese Recipes</b>-----------------------<br><br>";
     limitedRecipes.forEach((recipe, index) => {
       responseText += `${index + 1}. ${recipe.name}<br>`;
     });
-
     return res.json({
       answer: responseText,
       source: "Recipe Database",
@@ -135,13 +127,11 @@ app.post("/api/chat", (req, res) => {
     query.includes("american recipie")
   ) {
     const limitedRecipes = recipes.slice(386, 436);
-
-    let responseText = `------------------------------<b>American Recipes</b>-----------------------<br><br>`;
-
+    let responseText =
+      "------------------------------<b>American Recipes</b>-----------------------<br><br>";
     limitedRecipes.forEach((recipe, index) => {
       responseText += `${index + 1}. ${recipe.name}<br>`;
     });
-
     return res.json({
       answer: responseText,
       source: "Recipe Database",
@@ -163,7 +153,7 @@ app.post("/api/chat", (req, res) => {
     let responseText =
       "------------------------------<b>Bengali Recipes</b>-----------------------<br><br>";
     recipes.forEach((recipe, index) => {
-      // Insert Japanese Recipes header after 100 recipes
+      // Insert category headers at specific indexes
       if (index === 102) {
         responseText +=
           "<br>------------------------------<b>Japanese Recipes</b>----------------------<br><br>";
@@ -190,17 +180,12 @@ app.post("/api/chat", (req, res) => {
   }
 
   // Improved matching with aliases support and partial matching
-  // Split the query into tokens and normalize each token
   const queryTokens = query.split(" ").map((token) => normalizeString(token));
 
   const matchedRecipes = recipes
     .map((recipe) => {
-      // Combine main name and aliases
       const allNames = [recipe.name, ...(recipe.aliases || [])];
-      // Normalize each name
       const normalizedNames = allNames.map(normalizeString);
-
-      // For each normalized name, count how many query tokens it contains and the total length of matched tokens
       const bestMatchMetrics = normalizedNames.reduce(
         (acc, n) => {
           let count = 0;
@@ -218,7 +203,6 @@ app.post("/api/chat", (req, res) => {
         },
         { count: 0, total: 0 }
       );
-
       return {
         ...recipe,
         normalizedNames,
@@ -249,7 +233,6 @@ app.post("/api/chat", (req, res) => {
     bestMatch.instructions.forEach((step, index) => {
       responseText += `${index + 1}. ${step}<br>`;
     });
-
     return res.json({
       answer: responseText,
       source: "Recipe Database",
@@ -268,3 +251,5 @@ app.post("/api/chat", (req, res) => {
 app.listen(port, () => {
   console.log(`🚀 Server running on http://localhost:${port}`);
 });
+
+module.exports = app;
