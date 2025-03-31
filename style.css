@@ -1,0 +1,256 @@
+:root {
+  /* Dark Theme */
+  --background-color: #0f172a;
+  --text-color: #f8fafc;
+  --bot-bubble: #1e293b;
+  --input-bg: #1e293b;
+  --input-border: #334155;
+  --primary-color: #818cf8;
+  --secondary-color: #6366f1;
+  --background-gradient: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+  --message-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.2);
+  --scrollbar-track: #1e293b;
+  --scrollbar-thumb: #475569;
+  --user-bubble: var(--primary-color);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--background-color);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+.chat-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.initial-state {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  padding: 20px;
+}
+
+.initial-state .chat-header {
+  margin-bottom: 2rem;
+}
+
+.initial-state .chat-header i {
+  font-size: 3rem;
+  background: var(--background-gradient);
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  color: white;
+}
+
+.initial-state .header-text h1 {
+  font-size: 2rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.initial-state .header-text p {
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.initial-state .chat-input {
+  position: relative;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.initial-state .quick-links {
+  margin-top: 2rem;
+}
+
+.active-state {
+  display: none;
+  height: 100vh;
+}
+
+.chat-container.active .initial-state {
+  display: none;
+}
+
+.chat-container.active .active-state {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background: var(--bot-bubble);
+  padding: 1rem;
+  border-right: 1px solid var(--input-border);
+  overflow-y: auto;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.active-state .chat-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1rem;
+  background: var(--background-gradient);
+  gap: 1rem;
+  color: white;
+}
+
+.active-state .chat-header i {
+  font-size: 1.5rem;
+  background: var(--background-gradient);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  padding-bottom: 100px;
+  border: none;
+}
+
+.active-state .chat-input {
+  position: fixed;
+  bottom: 0;
+  left: 250px;
+  right: 0;
+  padding-top: 0.5rem;
+  background: var(--background-color);
+}
+
+.quick-link,
+.sidebar-link {
+  display: inline-block;
+  margin: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  background: rgba(129, 140, 248, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--input-border);
+}
+
+.quick-link:hover,
+.sidebar-link:hover {
+  background: rgba(129, 140, 248, 0.2);
+}
+
+.sidebar-link {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: 2px solid var(--input-border);
+  border-radius: 1rem;
+  font-size: 1rem;
+  background: var(--input-bg);
+  color: var(--text-color);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+}
+
+button#sendButton {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--background-gradient);
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 0.75rem;
+  color: white;
+  cursor: pointer;
+}
+
+button#sendButtonActive {
+  position: absolute;
+  right: 15px;
+  top: 35px;
+  transform: translateY(-50%);
+  background: var(--background-gradient);
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 0.75rem;
+  color: white;
+  cursor: pointer;
+}
+
+.message {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 1.5rem;
+  max-width: 70%;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: messageEntrance 0.4s forwards;
+}
+
+@keyframes messageEntrance {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-message {
+  background: var(--user-bubble);
+  color: white;
+  margin-left: auto;
+}
+
+.bot-message {
+  background: var(--bot-bubble);
+  color: var(--text-color);
+  margin-right: auto;
+}
+
+.scroll-top {
+  position: fixed;
+  bottom: 80px;
+  right: 25px;
+  width: 40px;
+  height: 40px;
+  background: var(--primary-color);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+}
+
+.scroll-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
