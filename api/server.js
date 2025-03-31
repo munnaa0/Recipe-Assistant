@@ -9,20 +9,13 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(
-  express.static(
-    path.join(
-      __dirname,
-      process.env.NODE_ENV === "production" ? "../public" : "../public"
-    )
-  )
-);
+app.use(express.static(path.join(__dirname, "../public")));
 
 // Load recipes from recipe.json at startup
 let recipes = [];
 try {
   const data = fs.readFileSync(
-    path.join(__dirname, "../data/recipe.json"), // Correct relative path
+    path.join(__dirname, "../data/recipe.json"),
     "utf8"
   );
   const jsonData = JSON.parse(data);
