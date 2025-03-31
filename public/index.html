@@ -52,23 +52,24 @@
         <div class="sidebar">
           <div class="sidebar-links">
             <h2>🍽️Quick Links👨‍🍳</h2>
-            <br />
-            <br />
-
+            <br /><br />
             <div class="sidebar-link suggestion-btn">All Recipes</div>
             <div class="sidebar-link suggestion-btn">Bengali Recipes</div>
             <div class="sidebar-link suggestion-btn">Japanese Recipes</div>
             <div class="sidebar-link suggestion-btn">Italian Recipes</div>
             <div class="sidebar-link suggestion-btn">Chinese Recipes</div>
             <div class="sidebar-link suggestion-btn">American Recipes</div>
-            <br />
-            <br />
+            <br /><br />
             <h3>🍽️Previous Prompts👨‍🍳</h3>
+            <div id="dynamicSidebarLinks"></div>
           </div>
         </div>
 
         <div class="main-content">
           <div class="chat-header">
+            <button id="sidebarToggle" class="sidebar-toggle">
+              <i class="fas fa-chevron-left"></i>
+            </button>
             <i class="fas fa-utensils"></i>
             <div class="header-text">
               <h1>Recipe Chatbot</h1>

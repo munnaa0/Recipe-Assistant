@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Mobile detection
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+  // DOM Elements
   const chatContainer = document.querySelector(".chat-container");
   const chatMessages = document.getElementById("chatMessages");
   const initialInput = document.getElementById("userInput");
@@ -9,6 +13,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const scrollTopBtn = document.getElementById("scrollTopBtn");
   let isFirstMessage = true;
 
+  // Sidebar Elements
+  const sidebarToggle = document.getElementById("sidebarToggle");
+  const sidebar = document.querySelector(".sidebar");
+  const sidebarIcon = sidebarToggle.querySelector("i");
+
+  // Initialize mobile state
+  if (isMobile) {
+    sidebar.classList.add("collapsed");
+    sidebarIcon.classList.replace("fa-chevron-left", "fa-chevron-right");
+  }
+
+  // Chat Activation
   function activateChat() {
     chatContainer.classList.add("active");
     isFirstMessage = false;
@@ -17,52 +33,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 50);
   }
 
+  // Message Creation
   function addMessage(text, isUser = true) {
     const messageDiv = document.createElement("div");
     messageDiv.className = `message ${isUser ? "user-message" : "bot-message"}`;
-
-    if (isUser) {
-      messageDiv.textContent = text;
-    } else {
-      messageDiv.innerHTML = text;
-    }
-
+    messageDiv.innerHTML = isUser ? text : `<i>${text}</i>`;
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  // ---------------------------
-  // New functionality starts here:
-  // Create a container for dynamic prompt links in the sidebar.
-  const sidebarLinks = document.querySelector(".sidebar-links");
-  const dynamicLinkContainer = document.createElement("div");
-  dynamicLinkContainer.id = "dynamicSidebarLinks";
-  sidebarLinks.appendChild(dynamicLinkContainer);
-
+  // Sidebar Management
+  const dynamicLinkContainer = document.getElementById("dynamicSidebarLinks");
   function updateSidebarWithPrompt(promptText) {
     const newLink = document.createElement("div");
     newLink.className = "sidebar-link suggestion-btn";
     newLink.textContent = promptText;
-    dynamicLinkContainer.appendChild(newLink);
-    // Keep only the last two prompt links.
-    if (dynamicLinkContainer.children.length > 3) {
+
+    if (dynamicLinkContainer.children.length >= 3) {
       dynamicLinkContainer.removeChild(dynamicLinkContainer.firstChild);
     }
-    // Allow clicking on the dynamic link to send that prompt.
+    dynamicLinkContainer.appendChild(newLink);
+
     newLink.addEventListener("click", () => {
       activeInput.value = promptText;
       sendMessage();
     });
   }
 
+  // Message Sending
   async function sendMessage() {
     const question = initialInput.value.trim() || activeInput.value.trim();
     if (!question) return;
 
     if (isFirstMessage) activateChat();
     addMessage(question, true);
-
-    //  Add the prompt to the sidebar links.
     updateSidebarWithPrompt(question);
 
     initialInput.value = "";
@@ -103,6 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
       (activeInput || initialInput).focus();
     }
   }
+
+  // Event Listeners
+  sidebarToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("collapsed");
+    sidebarIcon.classList.toggle("fa-chevron-right");
+    sidebarIcon.classList.toggle("fa-chevron-left");
+  });
 
   document.querySelectorAll(".suggestion-btn").forEach((button) => {
     button.addEventListener("click", (e) => {

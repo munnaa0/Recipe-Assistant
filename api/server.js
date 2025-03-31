@@ -15,7 +15,7 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public"))); // Using process.cwd() for consistency
+app.use(express.static(path.join(__dirname, "../public")));
 
 // Error-handling middleware
 app.use((err, req, res, next) => {
@@ -26,10 +26,7 @@ app.use((err, req, res, next) => {
 // Load recipes from recipe.json at startup
 let recipes = [];
 try {
-  const data = fs.readFileSync(
-    path.join(process.cwd(), "recipe.json"), // ✅ Points to root
-    "utf8"
-  );
+  const data = fs.readFileSync(path.join(process.cwd(), "recipe.json"), "utf8");
   const jsonData = JSON.parse(data);
   recipes = jsonData.recipes || [];
   console.log(`✅ Loaded ${recipes.length} recipes.`);
@@ -46,7 +43,7 @@ const normalizeString = (str) =>
     .replace(/[^\p{L}\p{N}]/gu, "")
     .replace(/s$/, "");
 
-// --- API Endpoint (POST only) ---
+//API Endpoint
 app.post("/api/chat", (req, res) => {
   const query = req.body.message?.trim().toLowerCase();
   if (!query || query.length < 1) {
@@ -58,7 +55,6 @@ app.post("/api/chat", (req, res) => {
 
   console.log(`\n🔍 Recipe query: "${query}"`);
 
-  // Example branch for "bengali recipes"
   if (
     query.includes("bengali recipies") ||
     query.includes("bengali recipe") ||
@@ -167,7 +163,6 @@ app.post("/api/chat", (req, res) => {
     let responseText =
       "------------------------------<b>Bengali Recipes</b>-----------------------<br><br>";
     recipes.forEach((recipe, index) => {
-      // Insert category headers at specific indexes
       if (index === 102) {
         responseText +=
           "<br>------------------------------<b>Japanese Recipes</b>----------------------<br><br>";
@@ -193,7 +188,7 @@ app.post("/api/chat", (req, res) => {
     });
   }
 
-  // Improved matching with aliases support and partial matching
+  //matching with aliases support and partial matching
   const queryTokens = query.split(" ").map(normalizeString);
 
   const matchedRecipes = recipes
@@ -260,18 +255,16 @@ app.post("/api/chat", (req, res) => {
   }
 });
 
-// Serve your static index.html for the root route
+// Serve static index.html for the root route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
-// (Optional) Temporary GET endpoint for debugging the API route
 app.get("/api/debug", (req, res) => {
   res.json({ message: "GET is working" });
 });
 app.listen(port, "0.0.0.0", () => {
-  // 👈 Add "0.0.0.0"
   console.log(`🚀 Server running on port ${port}`);
 });
 
-module.exports = app; // Required for Vercel serverless functions
+module.exports = app; // Required serverless functions
