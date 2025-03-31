@@ -7,9 +7,15 @@ const app = express();
 const port = process.env.PORT || 3865;
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://recipe-assistant-17he.onrender.com",
+    methods: ["POST", "GET"],
+    credentials: true,
+  })
+);
 app.use(express.json());
-app.use(express.static(path.join(process.cwd(), "public"))); // Using process.cwd() for consistency
+app.use(express.static(path.join(__dirname, "../public"))); // Using process.cwd() for consistency
 
 // Error-handling middleware
 app.use((err, req, res, next) => {
@@ -21,7 +27,7 @@ app.use((err, req, res, next) => {
 let recipes = [];
 try {
   const data = fs.readFileSync(
-    path.join(__dirname, "../recipe.json"), // ✅ Points to root
+    path.join(process.cwd(), "recipe.json"), // ✅ Points to root
     "utf8"
   );
   const jsonData = JSON.parse(data);
