@@ -9,13 +9,20 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(
+  express.static(
+    path.join(
+      __dirname,
+      process.env.NODE_ENV === "production" ? "../public" : "../public"
+    )
+  )
+);
 
 // Load recipes from recipe.json at startup
 let recipes = [];
 try {
   const data = fs.readFileSync(
-    path.join(__dirname, "../data/recipe.json"), // Adjusted path
+    path.join(process.cwd(), "data", "recipe.json"),
     "utf8"
   );
   const jsonData = JSON.parse(data);
@@ -251,10 +258,11 @@ app.post("/api/chat", (req, res) => {
   }
 });
 
-// --- Start Server ---
-// --- Start Server ---
-app.listen(port, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${port}`);
-});
-// Keep this for Render (no longer just for Vercel)
-module.exports = app;
+// --- Start Server (Conditional) ---
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`🚀 Server running on port ${port}`);
+  });
+}
+
+module.exports = app; // Required for Vercel
