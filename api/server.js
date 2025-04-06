@@ -259,6 +259,7 @@ app.post("/api/chat", (req, res) => {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
+app.get("/ping", (req, res) => res.send("pong"));
 
 app.get("/api/debug", (req, res) => {
   res.json({ message: "GET is working" });
